@@ -1,0 +1,22 @@
+{% extends 'tickets/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center text-center">
+    <div class="col-md-8">
+        <div class="alert alert-success p-5" role="alert">
+            <h1 class="display-4">Chamado Criado!</h1>
+            <p class="lead">Recebemos sua solicitação com sucesso.</p>
+            <hr>
+            <p>Seu código de acompanhamento é:</p>
+            
+            <div class="bg-white p-3 border rounded mb-4 d-inline-block">
+                <h2 class="text-primary m-0">{{ ticket.ticket_id }}</h2>
+            </div>
+            
+            <p class="mb-4">Guarde este código para consultar o status do seu atendimento.</p>
+            
+            <a href="{% url 'novo_chamado' %}" class="btn btn-primary">Voltar ao Início</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

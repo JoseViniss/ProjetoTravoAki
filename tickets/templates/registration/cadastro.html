@@ -1,0 +1,27 @@
+{% extends 'tickets/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-5">
+        <div class="card shadow border-0">
+            <div class="card-header bg-success text-white text-center">
+                <h4 class="m-0">Novo Técnico</h4>
+            </div>
+            <div class="card-body p-4">
+                <p class="text-muted text-center mb-4">Crie sua conta para começar a atender chamados.</p>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="submit" class="btn btn-success">Cadastrar</button>
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary">Voltar para Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

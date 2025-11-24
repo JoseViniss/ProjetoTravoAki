@@ -1,0 +1,32 @@
+{% extends 'tickets/base.html' %}
+
+{% block content %}
+<div class="row align-items-center" style="min-height: 60vh;">
+    <div class="col-md-6 mb-4">
+        <h1 class="display-4 fw-bold text-primary">Travô Aki?</h1>
+        <p class="lead text-muted">Sistema de suporte ágil para sua empresa.</p>
+        <p>Está com problemas técnicos? Abra um chamado agora mesmo e nossa equipe irá te ajudar.</p>
+        <a href="{% url 'novo_chamado' %}" class="btn btn-primary btn-lg mt-3">
+            📝 Abrir Novo Chamado
+        </a>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card p-5 bg-white shadow card-hover border-0">
+            <h3 class="mb-3 fw-bold text-primary">Já tem um chamado?</h3>
+            <p>Digite o código do protocolo para ver o andamento.</p>
+            
+            <form action="{% url 'pesquisar_chamado' %}" method="get">
+                <div class="input-group mb-3">
+                    <input type="text" name="protocolo" class="form-control form-control-lg" placeholder="Protocolo, Nome ou Empresa..." required>
+                    <button class="btn btn-dark" type="submit">🔍 Buscar</button>
+                </div>
+                
+                {% if erro %}
+                    <div class="alert alert-danger">{{ erro }}</div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

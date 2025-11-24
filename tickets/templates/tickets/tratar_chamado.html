@@ -1,0 +1,71 @@
+{% extends 'tickets/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5 mb-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary btn-sm mb-3">← Voltar ao Painel</a>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                <h5 class="m-0">Controle do Chamado</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Protocolo:</strong> {{ ticket.ticket_id }}</p>
+                <p><strong>Cliente:</strong> {{ ticket.nome_solicitante }} ({{ ticket.empresa }})</p>
+                <p><strong>Descrição:</strong><br>{{ ticket.descricao }}</p>
+                <hr>
+                
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form_status|crispy }}
+                    <div class="d-grid">
+                        <button type="submit" name="btn_status" class="btn btn-primary mt-2">Atualizar Status</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="m-0">Interações e Respostas</h5>
+            </div>
+            
+            <div class="card-body chat-container d-flex flex-column p-4" style="max-height: 500px; overflow-y: auto;">
+                {% for interacao in ticket.interacoes.all %}
+                    
+                    <div class="chat-bubble shadow-sm {% if interacao.autor == user %}chat-right{% else %}chat-left{% endif %}">
+                        
+                        <small class="chat-meta">
+                            {% if interacao.autor %}
+                                {{ interacao.autor.username|title }}
+                            {% else %}
+                                Cliente/Sistema
+                            {% endif %}
+                            • {{ interacao.data|date:"H:i" }}
+                        </small>
+                        
+                        {{ interacao.mensagem|linebreaksbr }}
+                    </div>
+
+                {% empty %}
+                    <div class="text-center text-muted py-5">
+                        <p>👋 Nenhuma interação ainda.</p>
+                        <small>Envie a primeira mensagem abaixo.</small>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="card-footer">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form_interacao|crispy }}
+                    <button type="submit" name="btn_mensagem" class="btn btn-success btn-sm mt-2">Enviar Resposta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

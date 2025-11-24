@@ -1,0 +1,101 @@
+{% extends 'tickets/base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Painel de Controle</h2>
+    <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-danger btn-sm">Sair</button>
+    </form>
+</div>
+
+<div class="btn-group mb-4" role="group">
+    <a href="?filtro=todos" class="btn btn-outline-primary {% if filtro_atual == 'todos' %}active{% endif %}">
+        Abertos (Geral)
+    </a>
+    <a href="?filtro=meus" class="btn btn-outline-primary {% if filtro_atual == 'meus' %}active{% endif %}">
+        Meus Tickets
+    </a>
+    <a href="?filtro=outros" class="btn btn-outline-primary {% if filtro_atual == 'outros' %}active{% endif %}">
+        De Outros
+    </a>
+    <a href="?filtro=fechados" class="btn btn-outline-secondary {% if filtro_atual == 'fechados' %}active{% endif %}">
+        Fechados/Resolvidos
+    </a>
+</div>
+
+<div class="alert alert-info py-2 mb-3">
+    📊 Total de chamados na fila: <strong>{{ total_abertos }}</strong>
+</div>
+
+<form method="get" class="mb-4">
+    <input type="hidden" name="filtro" value="{{ filtro_atual }}">
+    
+    <div class="input-group">
+        <input type="text" name="q" class="form-control" placeholder="Buscar por cliente, empresa ou descrição..." value="{{ request.GET.q|default:'' }}">
+        <button class="btn btn-primary" type="submit">🔍 Pesquisar</button>
+        
+        {% if request.GET.q %}
+            <a href="{% url 'dashboard' %}?filtro={{ filtro_atual }}" class="btn btn-outline-secondary">Limpar</a>
+        {% endif %}
+    </div>
+</form>
+
+<div class="card shadow-sm">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Protocolo</th>
+                    <th>Solicitante</th>
+                    <th>Empresa</th>
+                    <th>Status</th>
+                    <th>Técnico</th>
+                    <th>Data</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ticket in tickets %}
+                    <tr>
+                        <td><code>{{ ticket.ticket_id|stringformat:".8s" }}</code></td>
+                        
+                        <td>{{ ticket.nome_solicitante }}</td>
+                        
+                        <td>{{ ticket.empresa }}</td>
+                        
+                        <td>
+                            {% if ticket.status == 'novo' %}<span class="badge bg-success">Novo</span>
+                            {% elif ticket.status == 'resolvido' %}<span class="badge bg-secondary">Resolvido</span>
+                            {% else %}<span class="badge bg-warning text-dark">{{ ticket.get_status_display }}</span>
+                            {% endif %}
+                        </td>
+                        
+                        <td>
+                            {% if ticket.tecnico %}
+                                <span class="badge bg-info text-dark">{{ ticket.tecnico.username }}</span>
+                            {% else %}
+                                <span class="text-muted small">-- Não atribuído --</span>
+                            {% endif %}
+                        </td>
+                        
+                        <td>{{ ticket.created_at|date:"d/m H:i" }}</td>
+                        
+                        <td>
+                            <a href="{% url 'tratar_chamado' ticket.ticket_id %}" class="btn btn-sm btn-primary">
+                                Ver / Tratar
+                            </a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4 text-muted">
+                            Nenhum chamado encontrado com esses filtros.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

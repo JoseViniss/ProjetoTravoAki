@@ -1,0 +1,46 @@
+{% extends 'tickets/base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12 mb-4">
+        <a href="{% url 'index' %}" class="btn btn-outline-secondary btn-sm mb-3">← Voltar</a>
+        
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="m-0">Chamado #{{ ticket.ticket_id|stringformat:".8s" }}</h4> <span class="badge bg-light text-primary fs-6">{{ ticket.get_status_display }}</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Problema relatado por {{ ticket.nome_solicitante }}</h5>
+                <p class="card-text bg-light p-3 rounded border">{{ ticket.descricao }}</p>
+                <small class="text-muted">Aberto em: {{ ticket.created_at|date:"d/m/Y H:i" }} | Empresa: {{ ticket.empresa }}</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <h4 class="mb-3">Histórico de Atendimento</h4>
+        
+        {% if ticket.interacoes.all %}
+            <div class="list-group">
+                {% for interacao in ticket.interacoes.all %}
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">
+                                {% if interacao.autor %}
+                                    Técnico: {{ interacao.autor.username }}
+                                {% else %}
+                                    Sistema / Usuário
+                                {% endif %}
+                            </h5>
+                            <small>{{ interacao.data|date:"d/m H:i" }}</small>
+                        </div>
+                        <p class="mb-1">{{ interacao.mensagem }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">Nenhuma resposta do suporte ainda.</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
