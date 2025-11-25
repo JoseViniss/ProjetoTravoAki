@@ -3,4 +3,6 @@ Desenvolvimento de uma plataforma de controle de tickets/chamados, utilizando fu
 
 José Vinicius Garcia Rodrigues
 
+Link do projeto: https://travoaki.pythonanywhere.com
+
 Link da documentação analítica dos algoritmos: https://docs.google.com/document/d/16iIdyPDLqz0Uz3_CzmYpPjccIi1zb4Ym1Bgb1gQ0rfY/edit?usp=sharing
